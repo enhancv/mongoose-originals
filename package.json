@@ -10,11 +10,10 @@
         "mongoose": "^4.8.4"
     },
     "scripts": {
-        "test": "node_modules/.bin/istanbul cover node_modules/.bin/_mocha"
+        "test": "node_modules/.bin/mocha --recursive"
     },
     "devDependencies": {
         "dotenv": "^4.0.0",
-        "istanbul": "^0.4.5",
         "mocha": "^3.2.0"
     }
 }
