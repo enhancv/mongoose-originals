@@ -1,0 +1,20 @@
+{
+    "name": "mongoose-originals",
+    "version": "1.0.0",
+    "description": "Get original value of mongoose fields",
+    "main": "src/index.js",
+    "repository": "git@github.com:enhancv/mongoose-originals.git",
+    "author": "Ivan Kerin <ikerin@gmail.com>",
+    "license": "MIT",
+    "dependencies": {
+        "mongoose": "^4.8.4"
+    },
+    "scripts": {
+        "test": "node_modules/.bin/istanbul cover node_modules/.bin/_mocha"
+    },
+    "devDependencies": {
+        "dotenv": "^4.0.0",
+        "istanbul": "^0.4.5",
+        "mocha": "^3.2.0"
+    }
+}
