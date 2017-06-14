@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const originals = require('../../src');
+const originals = require("../../src");
 
 const CustomerSchema = new Schema({
     ipAddress: String,
@@ -10,8 +10,8 @@ const CustomerSchema = new Schema({
     answers: [{ name: String }],
 });
 
-CustomerSchema.plugin(originals, { fields: ['name', 'phone', 'answers'] });
+CustomerSchema.plugin(originals, { fields: ["name", "phone", "answers"] });
 
-const Customer = mongoose.model('Customer', CustomerSchema);
+const Customer = mongoose.model("Customer", CustomerSchema);
 
 module.exports = Customer;

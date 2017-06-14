@@ -1,10 +1,18 @@
 language: node_js
 services: mongodb
+addons:
+    code_climate:
+        repo_token: 5311945305435ff955a363abf213e2ba6b384f183cf49b5adaacb268fdf8038c
 node_js:
 - 6
 cache:
   directories:
   - node_modules
+script:
+- yarn run coverage
+after_success:
+- npm install -g codeclimate-test-reporter
+- codeclimate-test-reporter < coverage/lcov.info
 deploy:
   provider: npm
   email: ikerin@gmail.com
