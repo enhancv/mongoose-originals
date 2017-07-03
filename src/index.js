@@ -1,3 +1,5 @@
+const { isEqual, pick } = require("lodash/fp");
+
 function mongooseOriginals(schema, userOptions) {
     var options = Object.assign({ methods: true }, userOptions);
 
@@ -5,21 +7,27 @@ function mongooseOriginals(schema, userOptions) {
         throw new Error("No fields specified for mongoose originals on schema");
     }
 
+    function isChanged() {
+        return !this.original || !isEqual(this.original, pick(options.fields, this.toObject()));
+    }
+
     function saveOriginalNamed() {
         this.original = {};
+        const newValues = this.toObject();
 
         options.fields.forEach(name => {
-            this.original[name] = this.toObject()[name];
+            this.original[name] = newValues[name];
         });
     }
 
-    function saveConditionalOriginalNamed() {
+    function initOriginals() {
         if (this.original === undefined) {
             saveOriginalNamed.bind(this)();
         }
     }
 
-    schema.method("initOriginals", saveConditionalOriginalNamed);
+    schema.method("initOriginals", initOriginals);
+    schema.method("isChanged", isChanged);
     schema.post("init", saveOriginalNamed);
     schema.post("save", saveOriginalNamed);
 

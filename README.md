@@ -46,6 +46,15 @@ customer.initOriginals();
 console.log(customer.originals.name);
 ```
 
+You can check if the values are changed compared to the originals:
+```
+var customer = new Customer({ name: 'test', email: 'example.com' });
+customer.save().then((customer) => {
+    console.log(customer.isChanged()); // false
+    customer.name = 'other';
+    console.log(customer.isChanged()); // true
+});
+
 License
 -------
 

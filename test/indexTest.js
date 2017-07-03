@@ -97,6 +97,37 @@ describe(
             });
         });
 
+        it("Should be able to check for isChanged status", function() {
+            const customer = new Customer({
+                name: "Pesho",
+                email: "Pesho",
+                phone: "+318230132",
+                answers: [{ name: "I am big" }, { name: "I am strong" }],
+            });
+
+            return customer.save().then(customer => {
+                customer.email = "other";
+                assert.equal(customer.isChanged(), false);
+                customer.name = "other";
+                assert.equal(customer.isChanged(), true);
+            });
+        });
+
+        it("Should be able to check for isChanged status for nested arrays", function() {
+            const customer = new Customer({
+                name: "Pesho",
+                email: "Pesho",
+                phone: "+318230132",
+                answers: [{ name: "I am big" }, { name: "I am strong" }],
+            });
+
+            return customer.save().then(customer => {
+                assert.equal(customer.isChanged(), false);
+                customer.answers[0].name = "other";
+                assert.equal(customer.isChanged(), true);
+            });
+        });
+
         it("Should work even with unsaved models, by calling initOriginals", function() {
             const subscription = new Subscription({ name: "Basic" });
 
