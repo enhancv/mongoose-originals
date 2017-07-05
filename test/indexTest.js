@@ -5,11 +5,12 @@ const database = require("./database");
 const mongoose = require("mongoose");
 const Customer = require("./models/Customer");
 const Subscription = require("./models/Subscription");
+const Nested = require("./models/Nested");
 const originals = require("../src");
 
 describe(
     "Customer",
-    database([Customer], function() {
+    database([Customer, Nested], function() {
         it("Should throw an error if no fields are defined", function() {
             const Schema = mongoose.Schema;
 
@@ -20,6 +21,100 @@ describe(
             assert.throws(function() {
                 TestSchema.plugin(originals);
             }, /No fields specified for mongoose originals on schema/);
+        });
+
+        it.only("Should test nested setSnapshotOriginal and clearSnapshotOriginal", function() {
+            const nested = new Nested({
+                name: "11",
+                embedded: { name: "22", children: [{ title: "33" }, { title: "44" }] },
+                children: [
+                    { category: "55", nested: { type: "66" } },
+                    { category: "77", nested: { type: "88" } },
+                ],
+            });
+
+            return nested
+                .save()
+                .then(nested => {
+                    nested.setSnapshotOriginal();
+
+                    assert.deepEqual(nested.snapshotOriginal, nested.original);
+                    assert.deepEqual(nested.embedded.snapshotOriginal, nested.embedded.original);
+                    assert.deepEqual(
+                        nested.embedded.children[0].snapshotOriginal,
+                        nested.embedded.children[0].original
+                    );
+                    assert.deepEqual(
+                        nested.embedded.children[1].snapshotOriginal,
+                        nested.embedded.children[1].original
+                    );
+                    assert.deepEqual(
+                        nested.children[0].snapshotOriginal,
+                        nested.children[0].original
+                    );
+                    assert.deepEqual(
+                        nested.children[0].nested.snapshotOriginal,
+                        nested.children[0].nested.original
+                    );
+                    assert.deepEqual(
+                        nested.children[1].snapshotOriginal,
+                        nested.children[1].original
+                    );
+                    assert.deepEqual(
+                        nested.children[1].nested.snapshotOriginal,
+                        nested.children[1].nested.original
+                    );
+
+                    assert.deepEqual(nested.snapshotOriginal, { name: "11", email: undefined });
+                    assert.deepEqual(nested.embedded.snapshotOriginal, { name: "22" });
+                    assert.deepEqual(nested.embedded.children[0].snapshotOriginal, { title: "33" });
+                    assert.deepEqual(nested.embedded.children[1].snapshotOriginal, { title: "44" });
+                    assert.deepEqual(nested.children[0].snapshotOriginal, { category: "55" });
+                    assert.deepEqual(nested.children[0].nested.snapshotOriginal, { type: "66" });
+                    assert.deepEqual(nested.children[1].snapshotOriginal, { category: "77" });
+                    assert.deepEqual(nested.children[1].nested.snapshotOriginal, { type: "88" });
+
+                    nested.name = "t1";
+                    nested.embedded.name = "t2";
+                    nested.embedded.children[0].title = "t3";
+                    nested.embedded.children[1].title = "t4";
+                    nested.children[0].category = "t5";
+                    nested.children[0].nested.type = "t6";
+                    nested.children[1].category = "t7";
+                    nested.children[1].nested.type = "t8";
+
+                    return nested.save();
+                })
+                .then(nestedSaved => {
+                    assert.deepEqual(nestedSaved.original, { name: "t1", email: undefined });
+                    assert.deepEqual(nestedSaved.embedded.original, { name: "t2" });
+                    assert.deepEqual(nestedSaved.embedded.children[0].original, { title: "t3" });
+                    assert.deepEqual(nestedSaved.embedded.children[1].original, { title: "t4" });
+                    assert.deepEqual(nestedSaved.children[0].original, { category: "t5" });
+                    assert.deepEqual(nestedSaved.children[0].nested.original, { type: "t6" });
+                    assert.deepEqual(nestedSaved.children[1].original, { category: "t7" });
+                    assert.deepEqual(nestedSaved.children[1].nested.original, { type: "t8" });
+
+                    assert.deepEqual(nested.snapshotOriginal, { name: "11", email: undefined });
+                    assert.deepEqual(nested.embedded.snapshotOriginal, { name: "22" });
+                    assert.deepEqual(nested.embedded.children[0].snapshotOriginal, { title: "33" });
+                    assert.deepEqual(nested.embedded.children[1].snapshotOriginal, { title: "44" });
+                    assert.deepEqual(nested.children[0].snapshotOriginal, { category: "55" });
+                    assert.deepEqual(nested.children[0].nested.snapshotOriginal, { type: "66" });
+                    assert.deepEqual(nested.children[1].snapshotOriginal, { category: "77" });
+                    assert.deepEqual(nested.children[1].nested.snapshotOriginal, { type: "88" });
+
+                    nested.clearSnapshotOriginal();
+
+                    assert.equal(nested.snapshotOriginal, undefined);
+                    assert.equal(nested.embedded.snapshotOriginal, undefined);
+                    assert.equal(nested.embedded.children[0].snapshotOriginal, undefined);
+                    assert.equal(nested.embedded.children[1].snapshotOriginal, undefined);
+                    assert.equal(nested.children[0].snapshotOriginal, undefined);
+                    assert.equal(nested.children[0].nested.snapshotOriginal, undefined);
+                    assert.equal(nested.children[1].snapshotOriginal, undefined);
+                    assert.equal(nested.children[1].nested.snapshotOriginal, undefined);
+                });
         });
 
         it("Should not add collection methods if specified", function() {

@@ -1,5 +1,20 @@
 const { isEqual, pick } = require("lodash/fp");
 
+function eachMongooseOriginalsPath(item, fn, name) {
+    if (item && item.schema) {
+        if (item.schema.mongooseOriginals) {
+            fn(item);
+        }
+        item.schema.eachPath((name, type) => {
+            if (item[name] instanceof Array) {
+                item[name].forEach(item => eachMongooseOriginalsPath(item, fn, name));
+            } else {
+                eachMongooseOriginalsPath(item[name], fn, name);
+            }
+        });
+    }
+}
+
 function mongooseOriginals(schema, userOptions) {
     var options = Object.assign({ methods: true }, userOptions);
 
@@ -9,6 +24,18 @@ function mongooseOriginals(schema, userOptions) {
 
     function isChanged() {
         return !this.original || !isEqual(this.original, pick(options.fields, this.toObject()));
+    }
+
+    function setSnapshotOriginal() {
+        eachMongooseOriginalsPath(this, item => {
+            item.snapshotOriginal = item.original;
+        });
+    }
+
+    function clearSnapshotOriginal() {
+        eachMongooseOriginalsPath(this, item => {
+            delete item.snapshotOriginal;
+        });
     }
 
     function saveOriginalNamed() {
@@ -26,6 +53,9 @@ function mongooseOriginals(schema, userOptions) {
         }
     }
 
+    schema.mongooseOriginals = true;
+    schema.method("setSnapshotOriginal", setSnapshotOriginal);
+    schema.method("clearSnapshotOriginal", clearSnapshotOriginal);
     schema.method("initOriginals", initOriginals);
     schema.method("isChanged", isChanged);
     schema.post("init", saveOriginalNamed);
