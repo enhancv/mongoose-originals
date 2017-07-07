@@ -23,7 +23,13 @@ function mongooseOriginals(schema, userOptions) {
     }
 
     function isChanged() {
-        return !this.original || !isEqual(this.original, pick(options.fields, this.toObject()));
+        return (
+            !this.original ||
+            !isEqual(
+                this.original,
+                pick(options.fields, this.toObject({ getters: false, transform: false }))
+            )
+        );
     }
 
     function setSnapshotOriginal() {
@@ -40,7 +46,7 @@ function mongooseOriginals(schema, userOptions) {
 
     function saveOriginalNamed() {
         this.original = {};
-        const newValues = this.toObject();
+        const newValues = this.toObject({ getters: false, transform: false });
 
         options.fields.forEach(name => {
             this.original[name] = newValues[name];

@@ -23,7 +23,7 @@ describe(
             }, /No fields specified for mongoose originals on schema/);
         });
 
-        it.only("Should test nested setSnapshotOriginal and clearSnapshotOriginal", function() {
+        it("Should test nested setSnapshotOriginal and clearSnapshotOriginal", function() {
             const nested = new Nested({
                 name: "11",
                 embedded: { name: "22", children: [{ title: "33" }, { title: "44" }] },
