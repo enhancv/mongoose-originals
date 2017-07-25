@@ -36,7 +36,7 @@ describe(
             return nested
                 .save()
                 .then(nested => {
-                    nested.setSnapshotOriginal();
+                    assert.equal(nested.setSnapshotOriginal(), nested);
 
                     assert.deepEqual(nested.snapshotOriginal, nested.original);
                     assert.deepEqual(nested.embedded.snapshotOriginal, nested.embedded.original);
@@ -104,7 +104,7 @@ describe(
                     assert.deepEqual(nested.children[1].snapshotOriginal, { category: "77" });
                     assert.deepEqual(nested.children[1].nested.snapshotOriginal, { type: "88" });
 
-                    nested.clearSnapshotOriginal();
+                    assert.equal(nested.clearSnapshotOriginal(), nested);
 
                     assert.equal(nested.snapshotOriginal, undefined);
                     assert.equal(nested.embedded.snapshotOriginal, undefined);

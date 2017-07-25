@@ -22,7 +22,7 @@ function mongooseOriginals(schema, userOptions) {
         throw new Error("No fields specified for mongoose originals on schema");
     }
 
-    function isChanged() {
+    schema.method("isChanged", function isChanged() {
         return (
             !this.original ||
             !isEqual(
@@ -30,19 +30,21 @@ function mongooseOriginals(schema, userOptions) {
                 pick(options.fields, this.toObject({ getters: false, transform: false }))
             )
         );
-    }
+    });
 
-    function setSnapshotOriginal() {
+    schema.method("setSnapshotOriginal", function setSnapshotOriginal() {
         eachMongooseOriginalsPath(this, item => {
             item.snapshotOriginal = item.original;
         });
-    }
+        return this;
+    });
 
-    function clearSnapshotOriginal() {
+    schema.method("clearSnapshotOriginal", function clearSnapshotOriginal() {
         eachMongooseOriginalsPath(this, item => {
             delete item.snapshotOriginal;
         });
-    }
+        return this;
+    });
 
     function saveOriginalNamed() {
         this.original = {};
@@ -53,17 +55,13 @@ function mongooseOriginals(schema, userOptions) {
         });
     }
 
-    function initOriginals() {
+    schema.method("initOriginals", function initOriginals() {
         if (this.original === undefined) {
             saveOriginalNamed.bind(this)();
         }
-    }
+    });
 
     schema.mongooseOriginals = true;
-    schema.method("setSnapshotOriginal", setSnapshotOriginal);
-    schema.method("clearSnapshotOriginal", clearSnapshotOriginal);
-    schema.method("initOriginals", initOriginals);
-    schema.method("isChanged", isChanged);
     schema.post("init", saveOriginalNamed);
     schema.post("save", saveOriginalNamed);
 
