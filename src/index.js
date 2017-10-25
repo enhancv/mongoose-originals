@@ -24,17 +24,17 @@ function mongooseOriginals(schema, userOptions) {
 
     schema.method("isChanged", function isChanged() {
         return (
-            !this.original ||
+            !this._original ||
             !isEqual(
-                this.original,
-                pick(options.fields, this.toObject({ getters: false, transform: false }))
+                this._original,
+                pick(options.fields, this.toObject({ depopulate: true, getters: false, transform: false }))
             )
         );
     });
 
     schema.method("setSnapshotOriginal", function setSnapshotOriginal() {
         eachMongooseOriginalsPath(this, item => {
-            item.snapshotOriginal = item.original;
+            item.snapshotOriginal = item._original;
         });
         return this;
     });
@@ -47,16 +47,16 @@ function mongooseOriginals(schema, userOptions) {
     });
 
     function saveOriginalNamed() {
-        this.original = {};
+        this._original = {};
         const newValues = this.toObject({ getters: false, transform: false });
 
         options.fields.forEach(name => {
-            this.original[name] = newValues[name];
+            this._original[name] = newValues[name];
         });
     }
 
     schema.method("initOriginals", function initOriginals() {
-        if (this.original === undefined) {
+        if (this._original === undefined) {
             saveOriginalNamed.bind(this)();
         }
     });
@@ -70,8 +70,8 @@ function mongooseOriginals(schema, userOptions) {
             var _this = this;
 
             return this[name].filter(function(item) {
-                return !_this.original[name].find(function(originalItem) {
-                    return item._id.equals(originalItem._id);
+                return !_this._original[name].find(function(_originalItem) {
+                    return item._id.equals(_originalItem._id);
                 });
             });
         };
@@ -79,9 +79,9 @@ function mongooseOriginals(schema, userOptions) {
         schema.methods.collectionRemoved = function collectionRemoved(name) {
             var _this = this;
 
-            return this.original[name].filter(function(originalItem) {
+            return this._original[name].filter(function(_originalItem) {
                 return !_this[name].find(function(item) {
-                    return item._id.equals(originalItem._id);
+                    return item._id.equals(_originalItem._id);
                 });
             });
         };
@@ -90,8 +90,8 @@ function mongooseOriginals(schema, userOptions) {
             var _this = this;
 
             return this[name].filter(function(item) {
-                return _this.original[name].find(function(originalItem) {
-                    return item._id.equals(originalItem._id);
+                return _this._original[name].find(function(_originalItem) {
+                    return item._id.equals(_originalItem._id);
                 });
             });
         };

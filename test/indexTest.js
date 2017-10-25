@@ -38,31 +38,31 @@ describe(
                 .then(nested => {
                     assert.equal(nested.setSnapshotOriginal(), nested);
 
-                    assert.deepEqual(nested.snapshotOriginal, nested.original);
-                    assert.deepEqual(nested.embedded.snapshotOriginal, nested.embedded.original);
+                    assert.deepEqual(nested.snapshotOriginal, nested._original);
+                    assert.deepEqual(nested.embedded.snapshotOriginal, nested.embedded._original);
                     assert.deepEqual(
                         nested.embedded.children[0].snapshotOriginal,
-                        nested.embedded.children[0].original
+                        nested.embedded.children[0]._original
                     );
                     assert.deepEqual(
                         nested.embedded.children[1].snapshotOriginal,
-                        nested.embedded.children[1].original
+                        nested.embedded.children[1]._original
                     );
                     assert.deepEqual(
                         nested.children[0].snapshotOriginal,
-                        nested.children[0].original
+                        nested.children[0]._original
                     );
                     assert.deepEqual(
                         nested.children[0].nested.snapshotOriginal,
-                        nested.children[0].nested.original
+                        nested.children[0].nested._original
                     );
                     assert.deepEqual(
                         nested.children[1].snapshotOriginal,
-                        nested.children[1].original
+                        nested.children[1]._original
                     );
                     assert.deepEqual(
                         nested.children[1].nested.snapshotOriginal,
-                        nested.children[1].nested.original
+                        nested.children[1].nested._original
                     );
 
                     assert.deepEqual(nested.snapshotOriginal, { name: "11", email: undefined });
@@ -86,14 +86,14 @@ describe(
                     return nested.save();
                 })
                 .then(nestedSaved => {
-                    assert.deepEqual(nestedSaved.original, { name: "t1", email: undefined });
-                    assert.deepEqual(nestedSaved.embedded.original, { name: "t2" });
-                    assert.deepEqual(nestedSaved.embedded.children[0].original, { title: "t3" });
-                    assert.deepEqual(nestedSaved.embedded.children[1].original, { title: "t4" });
-                    assert.deepEqual(nestedSaved.children[0].original, { category: "t5" });
-                    assert.deepEqual(nestedSaved.children[0].nested.original, { type: "t6" });
-                    assert.deepEqual(nestedSaved.children[1].original, { category: "t7" });
-                    assert.deepEqual(nestedSaved.children[1].nested.original, { type: "t8" });
+                    assert.deepEqual(nestedSaved._original, { name: "t1", email: undefined });
+                    assert.deepEqual(nestedSaved.embedded._original, { name: "t2" });
+                    assert.deepEqual(nestedSaved.embedded.children[0]._original, { title: "t3" });
+                    assert.deepEqual(nestedSaved.embedded.children[1]._original, { title: "t4" });
+                    assert.deepEqual(nestedSaved.children[0]._original, { category: "t5" });
+                    assert.deepEqual(nestedSaved.children[0].nested._original, { type: "t6" });
+                    assert.deepEqual(nestedSaved.children[1]._original, { category: "t7" });
+                    assert.deepEqual(nestedSaved.children[1].nested._original, { type: "t8" });
 
                     assert.deepEqual(nested.snapshotOriginal, { name: "11", email: undefined });
                     assert.deepEqual(nested.embedded.snapshotOriginal, { name: "22" });
@@ -131,7 +131,7 @@ describe(
             assert.ok(!test.collectionAdded);
         });
 
-        it("Should be able to save original values", function() {
+        it("Should be able to save _original values", function() {
             const customer = new Customer({
                 name: "Pesho",
                 email: "Pesho",
@@ -155,7 +155,7 @@ describe(
                         answers: oldCustomer.answers,
                     };
 
-                    assert.deepEqual(customer.original, expected);
+                    assert.deepEqual(customer._original, expected);
 
                     return customer.save();
                 })
@@ -168,7 +168,7 @@ describe(
                         answers: newCustomer.answers,
                     };
 
-                    assert.deepEqual(customer.original, expected);
+                    assert.deepEqual(customer._original, expected);
                 });
         });
 
@@ -226,13 +226,13 @@ describe(
         it("Should work even with unsaved models, by calling initOriginals", function() {
             const subscription = new Subscription({ name: "Basic" });
 
-            assert.equal(undefined, subscription.original);
+            assert.equal(undefined, subscription._original);
 
             subscription.initOriginals();
 
             subscription.discounts.push(subscription.discounts.create({ amount: 20 }));
 
-            assert.deepEqual({ discounts: [] }, subscription.original);
+            assert.deepEqual({ discounts: [] }, subscription._original);
 
             subscription.initOriginals();
 
@@ -240,7 +240,7 @@ describe(
 
             assert.deepEqual(
                 { discounts: [] },
-                subscription.original,
+                subscription._original,
                 "Should not change initOriginals"
             );
         });

@@ -1,6 +1,6 @@
 {
     "name": "mongoose-originals",
-    "version": "1.3.2",
+    "version": "2.0.0",
     "description": "Get original value of mongoose fields",
     "main": "src/index.js",
     "repository": "git@github.com:enhancv/mongoose-originals.git",
@@ -11,13 +11,14 @@
     },
     "scripts": {
         "test": "node_modules/.bin/mocha --recursive",
-        "coverage": "node node_modules/.bin/istanbul cover node_modules/mocha/bin/_mocha -- --recursive"
+        "coverage":
+            "node node_modules/.bin/istanbul cover node_modules/mocha/bin/_mocha -- --recursive"
     },
     "devDependencies": {
         "dotenv": "^4.0.0",
         "istanbul": "^0.4.5",
         "mocha": "^3.2.0",
-        "mongoose": "^4.11.1"
+        "mongoose": "^4.12"
     },
     "dependencies": {
         "lodash": "^4.17.4"
