@@ -48,7 +48,7 @@ function mongooseOriginals(schema, userOptions) {
 
     function saveOriginalNamed() {
         this._original = {};
-        const newValues = this.toObject({ getters: false, transform: false });
+        const newValues = this.toObject({ depopulate: true, getters: false, transform: false });
 
         options.fields.forEach(name => {
             this._original[name] = newValues[name];

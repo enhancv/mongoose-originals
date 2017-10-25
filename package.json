@@ -1,6 +1,6 @@
 {
     "name": "mongoose-originals",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "Get original value of mongoose fields",
     "main": "src/index.js",
     "repository": "git@github.com:enhancv/mongoose-originals.git",
