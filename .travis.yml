@@ -15,7 +15,7 @@ after_success:
 - codeclimate-test-reporter < coverage/lcov.info
 deploy:
   provider: npm
-  email: ikerin@gmail.com
+  email: aleksander.ginovski@gmail.com
   api_key:
     secure: BY5PrFAqwfFCjyOAJYeR/1AT6YjPahjn+VRJMUcpVwSAgTa6Rg9mHF95AQdfBO1kGeSAwow9dLMkdk1vqcm1wM64nqx8NlFvCqeGQM9yP1QFDy2g9LNRTeBY2wr06+wXH3yWPUVHkNOYqiMDDtPX5zCAfHPpHXO07GeAF1UBv4HVb79lXGBiFfNss+6WxaPczScIsVRm7zbUkHJpThL10kojSRakNHvRU45JXu8oIYC4R6qD+lrL3BOpdQ3L3Sn5AKd+aQt/G7gsoqqFt4HSbtG97eTGxdeRSLmLJQ89Xla+FsuyiAHz0y+ASf4mkd7pOnyovR/RBTbOJCQ75rBOSeCBjvQ8pfI7/utdT3zuVXFDU6lUYxtzsf+oRpl1hflENtyBA500qdHg5+7c5IvSmg9UXv5hDbRf0xrw5Zs1FKRCQWXvkk4tojQv6TAksfgbPNIU16dV77+tCN2e8aD8EPctusMnfU8PxZo8RRhWVlwmVMojL8VAxUkYmWxL/Zz3FVIPQCparBTkNPkyY/7be//L2D9MxlUVHjzCTWxbWExwqx6aZIIZk5ORmC9pmSHQP6NssouTm61HnP6o9sB7MmUiq9CmonhvJGuzt6bL/qIdEcWa1L+OjNu8uGEoSWhBMV8EPf3aSEDcKrih0otid0pe0iyalAuWmWE6cmJLA1o=
   on:
